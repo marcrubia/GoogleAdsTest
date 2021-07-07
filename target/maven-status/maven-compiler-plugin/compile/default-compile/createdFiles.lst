@@ -1,0 +1,10 @@
+googleadstest/infrastructure/injection/GuiceApplicationServicesModule$InternalServerErrorExceptionMapper.class
+googleadstest/infrastructure/injection/GuiceApplicationServicesModule$BadURIExceptionMapper.class
+googleadstest/ui/GoogleAdsTest.class
+googleadstest/ui/controllers/BaseController.class
+googleadstest/ui/GoogleAdsTestApplication.class
+googleadstest/infrastructure/injection/GuiceControllersModule.class
+googleadstest/infrastructure/injection/GuiceApplicationServicesModule.class
+googleadstest/ui/GoogleAdsTestConfiguration.class
+googleadstest/application/service/OAuth2Service.class
+googleadstest/domain/model/GoogleAdsOAuth2Data.class

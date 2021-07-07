@@ -1,0 +1,22 @@
+<Configuration status="WARN">
+    <Appenders>
+        <Console name="Out" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+        <Console name="Error" target="SYSTEM_ERR">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Logger name="billy" level="info" additivity="false">
+            <AppenderRef ref="Out"/>
+        </Logger>
+        <Logger name="org.eclipse.jetty.server" level="info" additivity="false">
+            <appender-ref ref="Out" />
+        </Logger>
+        <Root level="error">
+            <AppenderRef ref="Error"/>
+        </Root>
+
+    </Loggers>
+</Configuration>
