@@ -241,6 +241,7 @@
     <billy.http-server-json.version>1.2.12.00</billy.http-server-json.version>
     <jar.entrypoint>googleadstest.ui.GoogleAdsTest</jar.entrypoint>
     <billy.http-server-core.version>1.2.12.00</billy.http-server-core.version>
+    <log4j-core.version>2.2</log4j-core.version>
     <maven.compiler.target>8</maven.compiler.target>
     <jar.port>8888</jar.port>
     <billy.http-client-core.version>1.4.47.00</billy.http-client-core.version>

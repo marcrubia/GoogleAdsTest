@@ -16,4 +16,7 @@ public class GoogleAdsTestConfiguration extends Configuration {
 
     @ArgParameter(names = {"-r", "--log-sampling-rate"}, description = "Log rampling rate", required = false)
     public Integer LOG_SAMPLING_RATE = null;
+
+    @ArgParameter(names = {"-sv-url", "--server-url"}, description = "Server URL", required = false)
+    public String SERVER_URL = null;
 }

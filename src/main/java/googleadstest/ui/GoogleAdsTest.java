@@ -9,6 +9,7 @@ import com.google.inject.Module;
 import com.google.inject.servlet.GuiceFilter;
 import com.squarespace.jersey2.guice.BootstrapUtils;
 import googleadstest.infrastructure.injection.GuiceControllersModule;
+import googleadstest.infrastructure.injection.GuiceInfrastructureModule;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.gzip.GzipHandler;
 import org.eclipse.jetty.servlet.FilterHolder;
@@ -47,7 +48,8 @@ public class GoogleAdsTest {
                             config.LOG_SAMPLING_RATE
                     ),
                     new GuiceCommonsControllersModule(),
-                    new GuiceControllersModule()
+                    new GuiceControllersModule(),
+                    new GuiceInfrastructureModule(config.SERVICE_PORT, config.SERVER_URL)
             );
 
             ServiceLocator locator = BootstrapUtils.newServiceLocator();

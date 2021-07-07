@@ -8,7 +8,7 @@
         </Console>
     </Appenders>
     <Loggers>
-        <Logger name="billy" level="info" additivity="false">
+        <Logger name="googleadstest" level="info" additivity="false">
             <AppenderRef ref="Out"/>
         </Logger>
         <Logger name="org.eclipse.jetty.server" level="info" additivity="false">

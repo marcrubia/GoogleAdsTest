@@ -7,11 +7,14 @@ import com.google.auth.oauth2.UserAuthorizer;
 import com.google.auth.oauth2.UserCredentials;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import googleadstest.domain.model.GoogleAdsOAuth2Data;
+import googleadstest.infrastructure.injection.InjectionNames;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Named;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.net.URI;
@@ -23,6 +26,8 @@ import java.util.Properties;
 
 @Singleton
 public class OAuth2Service {
+
+    public static Properties clientProperties = null;
     private static final Logger log = LoggerFactory.getLogger(OAuth2Service.class);
 
     // Scopes for the generated OAuth2 credentials. The list here only contains the AdWords scope,
@@ -31,14 +36,26 @@ public class OAuth2Service {
             ImmutableList.<String>builder().add("https://www.googleapis.com/auth/adwords").build();
     private static final String OAUTH2_CALLBACK = "/oauth2callback";
 
-    private static final String SERVER_URL = "http://localhost:8080";
-    private static final URI baseUri = URI.create(SERVER_URL);
-
     private static Map<String, GoogleAdsOAuth2Data> authDataMap = new HashMap<>();
 
     private static final Gson gson = new Gson();
 
+    @Inject
+    @Named(InjectionNames.PORT)
+    private Integer port;
+
+    @Inject
+    @Named(InjectionNames.SERVER_URL)
+    private String serverUrl;
+
+    private URI baseUri = null;
+
+
     public URL execute(String clientId, String clientSecret, String loginEmailAddressHint) {
+        if (baseUri == null) {
+            baseUri = URI.create(serverUrl+":"+port);
+        }
+
         // Creates an anti-forgery state token as described here:
         // https://developers.google.com/identity/protocols/OpenIDConnect#createxsrftoken
         String state = new BigInteger(130, new SecureRandom()).toString(32);
@@ -63,10 +80,10 @@ public class OAuth2Service {
 
             try {
                 UserAuthorizer userAuthorizer = data.getUserAuthorizer();
+                data.setCode(code);
 
                 // Exchanges the authorization code for credentials and print the refresh token.
-                UserCredentials userCredentials =
-                        userAuthorizer.getCredentialsFromCode(data.getCode(), baseUri);
+                UserCredentials userCredentials = userAuthorizer.getCredentialsFromCode(code, baseUri);
 
 
                 // Prints the configuration file contents.
@@ -76,9 +93,12 @@ public class OAuth2Service {
                 adsProperties.put(
                         GoogleAdsClient.Builder.ConfigPropertyKey.REFRESH_TOKEN.getPropertyKey(), userCredentials.getRefreshToken());
                 adsProperties.put(
-                        GoogleAdsClient.Builder.ConfigPropertyKey.DEVELOPER_TOKEN.getPropertyKey(), "INSERT_DEVELOPER_TOKEN_HERE");
+                        GoogleAdsClient.Builder.ConfigPropertyKey.DEVELOPER_TOKEN.getPropertyKey(), "hlA5BG8QG9A9Gd11McIk0A");
+                adsProperties.put(GoogleAdsClient.Builder.ConfigPropertyKey.LOGIN_CUSTOMER_ID, "6622457382");
 
-                System.out.println(gson.toJson(adsProperties));
+                log.info(gson.toJson(adsProperties));
+
+                clientProperties = adsProperties;
             } catch (IOException e) {
                 log.error("Error getting credentials from code", e);
             }

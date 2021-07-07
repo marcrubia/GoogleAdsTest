@@ -6,7 +6,7 @@
 
     <groupId>org.example</groupId>
     <artifactId>GoogleAdsTest</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.1-SNAPSHOT</version>
 
     <scm>
         <connection>scm:svn:http://127.0.0.1/dummy</connection>
@@ -29,14 +29,25 @@
         <billy.http-server-json.version>1.2.12.00</billy.http-server-json.version>
         <tracker.commons-injection.version>1.2.12.00</tracker.commons-injection.version>
         <billy.core.config-manager.version>1.1.36.00</billy.core.config-manager.version>
+         <log4j-core.version>2.2</log4j-core.version>
 
 
         <jar.entrypoint>googleadstest.ui.GoogleAdsTest</jar.entrypoint>
-        <jar.port>8888</jar.port>
+        <jar.port>7070</jar.port>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>billy</groupId>
+            <artifactId>logger</artifactId>
+            <version>${billy.logger.version}</version>
+        </dependency>
 
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>${log4j-core.version}</version>
+        </dependency>
         <dependency>
             <groupId>billy</groupId>
             <artifactId>config-manager</artifactId>
@@ -53,6 +64,12 @@
             <groupId>billy</groupId>
             <artifactId>http-client-core</artifactId>
             <version>${billy.http-client-core.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.google.guava</groupId>
+                    <artifactId>guava</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -89,13 +106,6 @@
             <artifactId>junit</artifactId>
             <version>4.13.1</version>
             <scope>test</scope>
-        </dependency>
-
-
-        <dependency>
-            <groupId>billy</groupId>
-            <artifactId>logger</artifactId>
-            <version>${billy.logger.version}</version>
         </dependency>
    </dependencies>
 

@@ -1,5 +1,6 @@
 package googleadstest.ui.controllers;
 
+import googleadstest.application.service.GoogleClientService;
 import googleadstest.application.service.OAuth2Service;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -13,6 +14,7 @@ import javax.ws.rs.core.Response;
 import java.net.URL;
 
 @Singleton
+@Path("/")
 @Produces(MediaType.APPLICATION_JSON)
 public class BaseController {
 
@@ -20,9 +22,13 @@ public class BaseController {
     @Inject
     private OAuth2Service oAuth2Service;
 
+    @Inject
+    private GoogleClientService googleClientService;
+
     @GET
     @Path("/test")
-    public Response login() {
+    public Response test(@QueryParam("customerId") String customerId) {
+        googleClientService.execute(customerId);
         return Response.ok().build();
     }
 
@@ -33,13 +39,13 @@ public class BaseController {
         URL url = oAuth2Service.execute(clientId, clientSecret, email);
 
         if (url != null) {
-            return Response.ok().build();
+            return Response.ok(url.toString()).build();
         }
         return Response.serverError().build();
     }
 
     @GET
-    @Path("/callback")
+    @Path("/oauth2callback")
     public Response callback(@QueryParam("code") String code, @QueryParam("state") String state, @QueryParam("scope") String scope) {
         oAuth2Service.processCallback(code, state, scope);
         return Response.ok().build();

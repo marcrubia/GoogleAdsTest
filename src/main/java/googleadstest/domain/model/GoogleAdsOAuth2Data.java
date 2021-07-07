@@ -16,6 +16,7 @@ public class GoogleAdsOAuth2Data {
         this.clientSecret = clientSecret;
         this.state = state;
         this.scope = scope;
+        this.userAuthorizer = userAuthorizer;
     }
 
     public String getCode() {
