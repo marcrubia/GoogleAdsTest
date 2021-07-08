@@ -1,9 +1,9 @@
 package googleadstest.ui.controllers;
 
-import googleadstest.application.service.GoogleCampaignListService;
-import googleadstest.application.service.OAuth2Service;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import googleadstest.application.service.GoogleCampaignListService;
+import googleadstest.application.service.OAuth2Service;
 import googleadstest.domain.model.GoogleCampaignResponse;
 
 import javax.ws.rs.GET;

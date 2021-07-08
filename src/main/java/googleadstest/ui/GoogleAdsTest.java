@@ -8,6 +8,7 @@ import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.servlet.GuiceFilter;
 import com.squarespace.jersey2.guice.BootstrapUtils;
+import googleadstest.infrastructure.injection.GuiceApplicationServicesModule;
 import googleadstest.infrastructure.injection.GuiceControllersModule;
 import googleadstest.infrastructure.injection.GuiceInfrastructureModule;
 import org.eclipse.jetty.server.Server;
@@ -20,7 +21,6 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import googleadstest.infrastructure.injection.GuiceApplicationServicesModule;
 
 import javax.servlet.DispatcherType;
 import java.util.Arrays;
