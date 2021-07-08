@@ -8,6 +8,7 @@ import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.servlet.GuiceFilter;
 import com.squarespace.jersey2.guice.BootstrapUtils;
+import googleadstest.application.service.OAuth2Service;
 import googleadstest.infrastructure.injection.GuiceApplicationServicesModule;
 import googleadstest.infrastructure.injection.GuiceControllersModule;
 import googleadstest.infrastructure.injection.GuiceInfrastructureModule;
@@ -86,6 +87,9 @@ public class GoogleAdsTest {
             context.addServlet(sh, "/*");
             server.setHandler(context);
 
+            // TODO remove after testing
+            OAuth2Service oAuth2Service = injector.getInstance(OAuth2Service.class);
+            oAuth2Service.setTestingProperties();
             server.start();
         } catch (Exception e) {
             log.error("Error starting the server ", e);

@@ -4,16 +4,12 @@ import com.google.auth.oauth2.UserAuthorizer;
 
 public class GoogleAdsOAuth2Data {
 
-    private String clientId;
-    private String clientSecret;
     private String code;
     private String state;
     private String scope;
     private UserAuthorizer userAuthorizer;
 
-    public GoogleAdsOAuth2Data(String clientId, String clientSecret, String state, String scope, UserAuthorizer userAuthorizer) {
-        this.clientId = clientId;
-        this.clientSecret = clientSecret;
+    public GoogleAdsOAuth2Data(String state, String scope, UserAuthorizer userAuthorizer) {
         this.state = state;
         this.scope = scope;
         this.userAuthorizer = userAuthorizer;
@@ -49,21 +45,5 @@ public class GoogleAdsOAuth2Data {
 
     public void setUserAuthorizer(UserAuthorizer userAuthorizer) {
         this.userAuthorizer = userAuthorizer;
-    }
-
-    public String getClientId() {
-        return clientId;
-    }
-
-    public void setClientId(String clientId) {
-        this.clientId = clientId;
-    }
-
-    public String getClientSecret() {
-        return clientSecret;
-    }
-
-    public void setClientSecret(String clientSecret) {
-        this.clientSecret = clientSecret;
     }
 }

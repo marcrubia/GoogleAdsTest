@@ -9,6 +9,7 @@ import com.google.ads.googleads.v8.services.GoogleAdsServiceClient;
 import com.google.ads.googleads.v8.services.SearchGoogleAdsStreamRequest;
 import com.google.ads.googleads.v8.services.SearchGoogleAdsStreamResponse;
 import com.google.api.gax.rpc.ServerStream;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import googleadstest.domain.model.GoogleCampaignResponse;
 import org.slf4j.Logger;
@@ -16,20 +17,27 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 @Singleton
 public class GoogleCampaignListService {
 
     private static final Logger log = LoggerFactory.getLogger(GoogleCampaignListService.class);
 
+    @Inject
+    private GooglePropertiesService googlePropertiesService;
+
     public List<GoogleCampaignResponse> execute(String accountId, String managerId) {
         List<GoogleCampaignResponse> campaigns = null;
 
-        OAuth2Service.clientProperties.put(GoogleAdsClient.Builder.ConfigPropertyKey.LOGIN_CUSTOMER_ID.getPropertyKey(), managerId);
 
         // TODO get client properties from bbdd
+
+        Properties adsProperties = OAuth2Service.clientProperties;
+        adsProperties.put(GoogleAdsClient.Builder.ConfigPropertyKey.LOGIN_CUSTOMER_ID.getPropertyKey(), managerId);
+
         GoogleAdsClient googleAdsClient = GoogleAdsClient.newBuilder()
-                .fromProperties(OAuth2Service.clientProperties)
+                .fromProperties(adsProperties)
                 .build();
 
         try {

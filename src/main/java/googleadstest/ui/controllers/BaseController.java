@@ -2,9 +2,12 @@ package googleadstest.ui.controllers;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import googleadstest.application.service.GetAccountHierarchy;
 import googleadstest.application.service.GoogleCampaignListService;
 import googleadstest.application.service.OAuth2Service;
+import googleadstest.domain.model.GoogleAccountResponse;
 import googleadstest.domain.model.GoogleCampaignResponse;
+import googleadstest.domain.model.GoogleHierarchyResponse;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -16,7 +19,7 @@ import java.net.URL;
 import java.util.List;
 
 @Singleton
-@Path("/google-ads")
+@Path("/")
 @Produces(MediaType.APPLICATION_JSON)
 public class BaseController {
 
@@ -26,6 +29,10 @@ public class BaseController {
     @Inject
     private GoogleCampaignListService googleClientService;
 
+
+    @Inject
+    private GetAccountHierarchy getAccountHierarchy;
+
     @GET
     @Path("/campaigns")
     public Response campaigns(@QueryParam("accountId") String accountId, @QueryParam("managerId") String managerId) {
@@ -33,6 +40,19 @@ public class BaseController {
         List<GoogleCampaignResponse> campaigns = googleClientService.execute(accountId, managerId);
         if (campaigns != null) {
             response = Response.ok(campaigns).build();
+        } else {
+            response = Response.serverError().build();
+        }
+        return response;
+    }
+
+    @GET
+    @Path("/hierarchy")
+    public Response hierarchy(@QueryParam("accountId") Long accountId, @QueryParam("managerId") Long managerId) {
+        Response response;
+        GoogleHierarchyResponse hierarchy = getAccountHierarchy.getAccounts(accountId, managerId);
+        if (hierarchy != null) {
+            response = Response.ok(hierarchy).build();
         } else {
             response = Response.serverError().build();
         }
@@ -53,7 +73,9 @@ public class BaseController {
     @GET
     @Path("/oauth2callback")
     public Response callback(@QueryParam("code") String code, @QueryParam("state") String state, @QueryParam("scope") String scope) {
-        oAuth2Service.processCallback(code, state, scope);
-        return Response.ok().build();
+        if (oAuth2Service.processCallback(code, state, scope)) {
+            return Response.ok("account connected successfully").build();
+        }
+        return Response.serverError().build();
     }
 }

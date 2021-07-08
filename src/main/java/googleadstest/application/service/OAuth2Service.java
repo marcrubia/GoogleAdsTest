@@ -49,16 +49,7 @@ public class OAuth2Service {
     private String serverUrl;
 
     @Inject
-    @Named(InjectionNames.GOOGLE_CLIENT_ID)
-    private String clientId;
-
-    @Inject
-    @Named(InjectionNames.GOOGLE_CLIENT_SECRET)
-    private String clientSecret;
-
-    @Inject
-    @Named(InjectionNames.GOOGLE_DEVELOPER_TOKEN)
-    private String devToken;
+    private GooglePropertiesService googlePropertiesService;
 
     private URI baseUri = null;
 
@@ -74,7 +65,7 @@ public class OAuth2Service {
 
         UserAuthorizer userAuthorizer =
                 UserAuthorizer.newBuilder()
-                        .setClientId(ClientId.of(clientId, clientSecret))
+                        .setClientId(ClientId.of(googlePropertiesService.CLIENT_ID, googlePropertiesService.CLIENT_SECRET))
                         .setScopes(SCOPES)
                         .setCallbackUri(URI.create(OAUTH2_CALLBACK))
                         .build();
@@ -82,12 +73,12 @@ public class OAuth2Service {
         log.info("Requesting authorization");
 
         // TODO save info on BBDD as login attempt instead inmemory
-        authDataMap.put(state, new GoogleAdsOAuth2Data(clientId, clientSecret, state, SCOPES.get(0), userAuthorizer));
+        authDataMap.put(state, new GoogleAdsOAuth2Data(state, SCOPES.get(0), userAuthorizer));
 
         return userAuthorizer.getAuthorizationUrl(null, state, baseUri);
     }
 
-    public void processCallback(String code, String state, String scope) {
+    public boolean processCallback(String code, String state, String scope) {
         GoogleAdsOAuth2Data data = validateData(code, state, scope);
         if (data != null) {
 
@@ -99,13 +90,8 @@ public class OAuth2Service {
                 UserCredentials userCredentials = userAuthorizer.getCredentialsFromCode(code, baseUri);
 
                 // Prints the configuration file contents.
-                Properties adsProperties = new Properties();
-                adsProperties.put(GoogleAdsClient.Builder.ConfigPropertyKey.CLIENT_ID.getPropertyKey(), data.getClientId());
-                adsProperties.put(GoogleAdsClient.Builder.ConfigPropertyKey.CLIENT_SECRET.getPropertyKey(), data.getClientSecret());
-                adsProperties.put(
-                        GoogleAdsClient.Builder.ConfigPropertyKey.REFRESH_TOKEN.getPropertyKey(), userCredentials.getRefreshToken());
-                adsProperties.put(
-                        GoogleAdsClient.Builder.ConfigPropertyKey.DEVELOPER_TOKEN.getPropertyKey(), devToken);
+                Properties adsProperties = googlePropertiesService.getDefaultProperties();
+                adsProperties.put(GoogleAdsClient.Builder.ConfigPropertyKey.REFRESH_TOKEN.getPropertyKey(), userCredentials.getRefreshToken());
 
                 log.info(gson.toJson(adsProperties));
 
@@ -114,8 +100,10 @@ public class OAuth2Service {
                 // TODO save refresh token
             } catch (IOException e) {
                 log.error("Error getting credentials from code", e);
+                return false;
             }
         }
+        return true;
     }
 
     private GoogleAdsOAuth2Data validateData(String code, String state, String scope) {
@@ -141,5 +129,12 @@ public class OAuth2Service {
         }
 
         return data;
+    }
+
+    public void setTestingProperties() {
+        // Prints the configuration file contents.
+        Properties adsProperties = googlePropertiesService.getDefaultProperties();
+        adsProperties.put(GoogleAdsClient.Builder.ConfigPropertyKey.REFRESH_TOKEN.getPropertyKey(), "1//03l11COIVvpGvCgYIARAAGAMSNwF-L9IrsfMqKvi28L4GtGpIGWklQmPM_EzG669x7U-FBlULEWlnusrcZfaj2hQFNfA501NfG78");
+        clientProperties = adsProperties;
     }
 }
