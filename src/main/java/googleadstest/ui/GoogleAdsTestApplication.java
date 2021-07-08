@@ -7,6 +7,6 @@ import javax.ws.rs.ApplicationPath;
 @ApplicationPath("/")
 public class GoogleAdsTestApplication extends ResourceConfig {
     public GoogleAdsTestApplication() {
-        packages(true, "googleadstest");
+        packages(true, "googleadstest", "billy");
     }
 }

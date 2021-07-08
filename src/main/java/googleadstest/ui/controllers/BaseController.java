@@ -1,11 +1,11 @@
 package googleadstest.ui.controllers;
 
+import com.beust.jcommander.internal.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import googleadstest.application.service.GetAccountHierarchy;
 import googleadstest.application.service.GoogleCampaignListService;
 import googleadstest.application.service.OAuth2Service;
-import googleadstest.domain.model.GoogleAccountResponse;
 import googleadstest.domain.model.GoogleCampaignResponse;
 import googleadstest.domain.model.GoogleHierarchyResponse;
 
@@ -50,13 +50,20 @@ public class BaseController {
     @Path("/hierarchy")
     public Response hierarchy(@QueryParam("accountId") Long accountId, @QueryParam("managerId") Long managerId) {
         Response response;
-        GoogleHierarchyResponse hierarchy = getAccountHierarchy.getAccounts(accountId, managerId);
+        GoogleHierarchyResponse hierarchy = getAccountHierarchy.getAccounts(managerId, accountId);
         if (hierarchy != null) {
             response = Response.ok(hierarchy).build();
         } else {
             response = Response.serverError().build();
         }
         return response;
+    }
+
+    @GET
+    @Path("/test")
+    public Response test() {
+
+        return Response.ok(Lists.newArrayList("test")).build();
     }
 
 

@@ -2,11 +2,9 @@ package googleadstest.domain.model;
 
 import com.google.ads.googleads.v8.resources.CustomerClient;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class GoogleAccountResponse {
 
+    private long id;
     private String descriptiveName;
     private String timezone;
     private String currencyCode;
@@ -15,6 +13,7 @@ public class GoogleAccountResponse {
     public GoogleAccountResponse() {}
 
     public GoogleAccountResponse(CustomerClient acc) {
+        this.id = acc.getId();
         this.descriptiveName = acc.getDescriptiveName();
         this.timezone = acc.getTimeZone();
         this.currencyCode = acc.getCurrencyCode();

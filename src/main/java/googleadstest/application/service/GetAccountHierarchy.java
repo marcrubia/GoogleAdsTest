@@ -100,6 +100,8 @@ public class GetAccountHierarchy {
             hierarchy.add(manager);
         }
 
+        response.setHierarchy(hierarchy);
+
         return response;
     }
 

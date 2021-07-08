@@ -134,7 +134,7 @@ public class OAuth2Service {
     public void setTestingProperties() {
         // Prints the configuration file contents.
         Properties adsProperties = googlePropertiesService.getDefaultProperties();
-        adsProperties.put(GoogleAdsClient.Builder.ConfigPropertyKey.REFRESH_TOKEN.getPropertyKey(), "1//03l11COIVvpGvCgYIARAAGAMSNwF-L9IrsfMqKvi28L4GtGpIGWklQmPM_EzG669x7U-FBlULEWlnusrcZfaj2hQFNfA501NfG78");
+        adsProperties.put(GoogleAdsClient.Builder.ConfigPropertyKey.REFRESH_TOKEN.getPropertyKey(), "1//03hGKfqxAYWAVCgYIARAAGAMSNwF-L9IrkBdjtTXfsbtdeyOybsclPVDrUTZtKT-OVgdsn_I5GKlIbvAE0BW7RMa7TCKF7GRzobc");
         clientProperties = adsProperties;
     }
 }
