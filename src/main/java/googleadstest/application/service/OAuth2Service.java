@@ -48,10 +48,22 @@ public class OAuth2Service {
     @Named(InjectionNames.SERVER_URL)
     private String serverUrl;
 
+    @Inject
+    @Named(InjectionNames.GOOGLE_CLIENT_ID)
+    private String clientId;
+
+    @Inject
+    @Named(InjectionNames.GOOGLE_CLIENT_SECRET)
+    private String clientSecret;
+
+    @Inject
+    @Named(InjectionNames.GOOGLE_DEVELOPER_TOKEN)
+    private String devToken;
+
     private URI baseUri = null;
 
 
-    public URL execute(String clientId, String clientSecret, String loginEmailAddressHint) {
+    public URL execute() {
         if (baseUri == null) {
             baseUri = URI.create(serverUrl+":"+port);
         }
@@ -69,9 +81,10 @@ public class OAuth2Service {
 
         log.info("Requesting authorization");
 
+        // TODO save info on BBDD as login attempt instead inmemory
         authDataMap.put(state, new GoogleAdsOAuth2Data(clientId, clientSecret, state, SCOPES.get(0), userAuthorizer));
 
-        return userAuthorizer.getAuthorizationUrl(loginEmailAddressHint, state, baseUri);
+        return userAuthorizer.getAuthorizationUrl(null, state, baseUri);
     }
 
     public void processCallback(String code, String state, String scope) {
@@ -85,7 +98,6 @@ public class OAuth2Service {
                 // Exchanges the authorization code for credentials and print the refresh token.
                 UserCredentials userCredentials = userAuthorizer.getCredentialsFromCode(code, baseUri);
 
-
                 // Prints the configuration file contents.
                 Properties adsProperties = new Properties();
                 adsProperties.put(GoogleAdsClient.Builder.ConfigPropertyKey.CLIENT_ID.getPropertyKey(), data.getClientId());
@@ -93,25 +105,24 @@ public class OAuth2Service {
                 adsProperties.put(
                         GoogleAdsClient.Builder.ConfigPropertyKey.REFRESH_TOKEN.getPropertyKey(), userCredentials.getRefreshToken());
                 adsProperties.put(
-                        GoogleAdsClient.Builder.ConfigPropertyKey.DEVELOPER_TOKEN.getPropertyKey(), "hlA5BG8QG9A9Gd11McIk0A");
-                adsProperties.put(GoogleAdsClient.Builder.ConfigPropertyKey.LOGIN_CUSTOMER_ID, "6622457382");
+                        GoogleAdsClient.Builder.ConfigPropertyKey.DEVELOPER_TOKEN.getPropertyKey(), devToken);
 
                 log.info(gson.toJson(adsProperties));
 
                 clientProperties = adsProperties;
+
+                // TODO save refresh token
             } catch (IOException e) {
                 log.error("Error getting credentials from code", e);
             }
         }
-
-
-
     }
 
     private GoogleAdsOAuth2Data validateData(String code, String state, String scope) {
         GoogleAdsOAuth2Data data = null;
         if (code != null) {
 
+            // TODO get info from bbdd instead of inmemory
             GoogleAdsOAuth2Data tmpData = authDataMap.get(state);
 
             if (tmpData != null) {

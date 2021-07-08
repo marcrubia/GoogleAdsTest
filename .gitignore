@@ -1,0 +1,8 @@
+.idea/
+**/*.iml
+**/target/
+**/gen-java/
+/data/
+dependency-reduced-pom.xml
+__pycache__/
+*.pyc

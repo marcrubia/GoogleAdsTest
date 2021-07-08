@@ -49,7 +49,13 @@ public class GoogleAdsTest {
                     ),
                     new GuiceCommonsControllersModule(),
                     new GuiceControllersModule(),
-                    new GuiceInfrastructureModule(config.SERVICE_PORT, config.SERVER_URL)
+                    new GuiceInfrastructureModule(
+                            config.SERVICE_PORT,
+                            config.SERVER_URL,
+                            config.GOOGLE_CLIENT_ID,
+                            config.GOOGLE_CLIENT_SECRET,
+                            config.GOOGLE_DEV_TOKEN
+                    )
             );
 
             ServiceLocator locator = BootstrapUtils.newServiceLocator();
