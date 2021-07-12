@@ -49,7 +49,6 @@ public class GoogleIpBlocksCreateService {
         List<GoogleIpBlockResponse> ipBlocks = null;
 
         String campaignResourceName = ResourceNames.campaign(customerId, campaignId);
-
         List<CampaignCriterionOperation> operations = new ArrayList<>();
 
         for (String ip : ips) {

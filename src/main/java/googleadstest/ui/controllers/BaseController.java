@@ -94,7 +94,7 @@ public class BaseController {
 
     @DELETE
     @Path("/ipblocks")
-    public Response deleteIpBlock(@QueryParam("accountId") Long accountId, @QueryParam("managerId") Long managerId, @QueryParam("campaignId") Long campaignId, List<String> ids) {
+    public Response deleteIpBlock(@QueryParam("accountId") Long accountId, @QueryParam("managerId") Long managerId, @QueryParam("campaignId") Long campaignId, List<Long> ids) {
         googleCriteriaRemoveService.removeCriteria(managerId, accountId, campaignId, ids);
         return Response.ok().build();
     }

@@ -20,11 +20,8 @@ import java.util.Properties;
 public class GoogleCriteriaRemoveService {
 
     private static final Logger log = LoggerFactory.getLogger(GoogleCriteriaRemoveService.class);
-    private static final String CRITERIA_BASE_PATH_1 = "customers/";
-    private static final String CRITERIA_BASE_PATH_2 = "/campaignCriteria/";
-    private static final String CRITERIA_BASE_PATH_3 = "~";
 
-    public void removeCriteria(Long managerId, Long accountId, Long campaignId, List<String> ips) {
+    public void removeCriteria(Long managerId, Long accountId, Long campaignId, List<Long> ips) {
         Properties adsProperties = OAuth2Service.clientProperties;
         adsProperties.put(GoogleAdsClient.Builder.ConfigPropertyKey.LOGIN_CUSTOMER_ID.getPropertyKey(), Long.toString(managerId));
 
@@ -43,15 +40,13 @@ public class GoogleCriteriaRemoveService {
         }
     }
 
-    private void removeCriteria(GoogleAdsClient googleAdsClient, Long customerId, Long campaignId, List<String> ids) {
-        String campaignResourceName = ResourceNames.campaign(customerId, campaignId);
-
+    private void removeCriteria(GoogleAdsClient googleAdsClient, Long customerId, Long campaignId, List<Long> ids) {
         List<CampaignCriterionOperation> operations = new ArrayList<>();
 
-        for (String id : ids) {
+        for (Long id : ids) {
             operations.add(
                     CampaignCriterionOperation.newBuilder()
-                    .setRemove(getCriteriaPath(customerId, campaignId, id))
+                    .setRemove(ResourceNames.campaignCriterion(customerId, campaignId, id))
                     .build()
             );
         }
@@ -64,30 +59,7 @@ public class GoogleCriteriaRemoveService {
                         .addAllOperations(operations)
                         .setCustomerId(String.valueOf(customerId))
                         .setResponseContentType(ResponseContentTypeEnum.ResponseContentType.MUTABLE_RESOURCE).build();
-            MutateCampaignCriteriaResponse response =
-                    campaignCriterionServiceClient
-                    .mutateCampaignCriteria(request);
-
-
-
+            campaignCriterionServiceClient.mutateCampaignCriteria(request);
         }
-    }
-
-    private String getCriteriaPath(Long customerId, Long campaignId, String id) {
-
-        // customers/{customer_id}/campaignCriteria/{campaign_id}~{criterion_id}
-        return CRITERIA_BASE_PATH_1 + customerId + CRITERIA_BASE_PATH_2 + campaignId + CRITERIA_BASE_PATH_3 + id;
-    }
-
-    private CampaignCriterion buildNegativeIpBlockCriterion(
-            String ip, String campaignResourceName) {
-        return CampaignCriterion.newBuilder()
-                .setCampaign(campaignResourceName)
-                .setNegative(true)
-                .setIpBlock(
-                        IpBlockInfo.newBuilder()
-                                .setIpAddress(ip)
-                                .build())
-                .build();
     }
 }
