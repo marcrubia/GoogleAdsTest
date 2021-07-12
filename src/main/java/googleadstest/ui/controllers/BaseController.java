@@ -3,16 +3,12 @@ package googleadstest.ui.controllers;
 import com.beust.jcommander.internal.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import googleadstest.application.service.GetAccountHierarchy;
-import googleadstest.application.service.GoogleCampaignListService;
-import googleadstest.application.service.OAuth2Service;
+import googleadstest.application.service.*;
 import googleadstest.domain.model.GoogleCampaignResponse;
 import googleadstest.domain.model.GoogleHierarchyResponse;
+import googleadstest.domain.model.GoogleIpBlockResponse;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.net.URL;
@@ -29,9 +25,16 @@ public class BaseController {
     @Inject
     private GoogleCampaignListService googleClientService;
 
+    @Inject
+    private GoogleAccountHierarchy getAccountHierarchy;
 
     @Inject
-    private GetAccountHierarchy getAccountHierarchy;
+    private GoogleIpBlocksListService googleIpBlocksListService;
+
+    @Inject
+    private GoogleIpBlocksCreateService googleIpBlocksCreateService;
+    @Inject
+    private GoogleCriteriaRemoveService googleCriteriaRemoveService;
 
     @GET
     @Path("/campaigns")
@@ -57,6 +60,43 @@ public class BaseController {
             response = Response.serverError().build();
         }
         return response;
+    }
+
+    @GET
+    @Path("/ipblocks")
+    public Response criteria(@QueryParam("accountId") Long accountId, @QueryParam("managerId") Long managerId, @QueryParam("campaignId") Long campaignId) {
+        Response response;
+        List<GoogleIpBlockResponse> ipBlocks = googleIpBlocksListService.getIpBlocks(managerId, accountId, campaignId);
+
+        if (ipBlocks != null) {
+            response = Response.ok(ipBlocks).build();
+        } else {
+            response = Response.serverError().build();
+        }
+
+        return response;
+    }
+
+    @POST
+    @Path("/ipblocks")
+    public Response addIpBlock(@QueryParam("accountId") Long accountId, @QueryParam("managerId") Long managerId, @QueryParam("campaignId") Long campaignId, List<String> ips) {
+        Response response;
+        List<GoogleIpBlockResponse> ipBlocks = googleIpBlocksCreateService.createIpBlocks(managerId, accountId, campaignId, ips);
+
+        if (ipBlocks != null) {
+            response = Response.ok(ipBlocks).build();
+        } else {
+            response = Response.serverError().build();
+        }
+
+        return response;
+    }
+
+    @DELETE
+    @Path("/ipblocks")
+    public Response deleteIpBlock(@QueryParam("accountId") Long accountId, @QueryParam("managerId") Long managerId, @QueryParam("campaignId") Long campaignId, List<String> ids) {
+        googleCriteriaRemoveService.removeCriteria(managerId, accountId, campaignId, ids);
+        return Response.ok().build();
     }
 
     @GET

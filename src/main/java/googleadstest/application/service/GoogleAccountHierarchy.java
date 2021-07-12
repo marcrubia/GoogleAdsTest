@@ -25,9 +25,9 @@ import java.util.*;
  * hierarchy, this example will retrieve and print the overlapping portions of the hierarchy for
  * each accessible customer.
  */
-public class GetAccountHierarchy {
+public class GoogleAccountHierarchy {
 
-    private static final Logger log = LoggerFactory.getLogger(GetAccountHierarchy.class);
+    private static final Logger log = LoggerFactory.getLogger(GoogleAccountHierarchy.class);
 
     public GoogleHierarchyResponse getAccounts() {
         return getAccounts(null, null);
